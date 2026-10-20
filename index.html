@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>if(localStorage.getItem('ect_logged')!='1'){location.href='login.html';}</script>
+<script>if(localStorage.getItem('ect_logged')!=='1'){location.href='login.html';}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ECT.MA - par elhajli souhail</title>
@@ -10,17 +10,19 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0f0f10;color:#fff;font-family:'Inter',sans-serif}
 header{background:#18181b;display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid #222}
-.logo{font-weight:800;font-size:42px;letter-spacing:-2px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-1px}
 .logo .dot,.logo .y{color:#e6ff32}
-nav{display:flex;align-items:center;gap:14px;color:#9ca3af;font-size:15px}
+nav{display:flex;align-items:center;gap:14px;color:#9ca3af;font-size:13px}
+nav a{color:#9ca3af;text-decoration:none}
+nav a:hover{color:#fff}
 nav .sep{width:5px;height:5px;background:#e6ff32;border-radius:50%;display:inline-block}
-.btn-top{border:1.5px solid #e6ff32;color:#e6ff32;padding:9px 22px;border-radius:999px;font-weight:700;text-decoration:none}
+.btn-top{border:1px solid #e6ff32;color:#e6ff32;padding:8px 18px;border-radius:999px;font-weight:700;text-decoration:none}
 .hero{text-align:center;padding:70px 5% 20px}
 .hero h1{font-family:'Cairo',sans-serif;font-size:56px;font-weight:800}
 .hero p{color:#9ca3af;margin-top:16px;font-size:17px}
-.hero-line{width:62px;height:6px;background:#e6ff32;margin:26px auto;border-radius:99px}
+.hero-line{width:62px;height:6px;background:#e6ff32;margin:26px auto;border-radius:999px}
 .grid{max-width:1250px;margin:0 auto;padding:30px 4% 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.card{background:#1a1a1e;border:1px solid #26262b;border-radius:18px;padding:32px 26px;position:relative}
+.card{background:#1a1a1e;border:1px solid #26262b;border-radius:18px;padding:22px 26px;position:relative}
 .card::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:88px;height:9px;background:#e6ff32;border-radius:999px}
 .card-icon{width:64px;height:48px;background:#e6ff32;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:#000;font-weight:800;font-size:22px}
 .card-icon.transparent{background:transparent;color:#e6ff32;font-size:32px}
@@ -35,19 +37,19 @@ footer b{color:#e6ff32}
 </head>
 <body>
 <header>
-<div class="logo">ECT<span class="dot">.</span>M<span class="y">A</span></div>
-<nav><a href="index.html">Accueil</a> <span class="sep">•</span> <a href="quiz.html">Quiz</a> <span class="sep">•</span> <a href="#">A propos</a> <span class="sep">•</span> <a href="callcentre.html">Call Center</a> <span class="sep">•</span> <a href="login.html">Se connecter</a> <a class="btn-top" href="login.html">Se connecter</a></nav>
+<div class="logo">ECT<span class="dot">.</span><span class="y">MA</span></div>
+<nav><a href="index.html">Accueil</a> <span class="sep"></span> <a href="quiz.html">Quiz</a> <span class="sep"></span> <a href="#">A propos</a> <span class="sep"></span> <a href="callcentre.html">Call Center</a> <span class="sep"></span> <a href="login.html">Se connecter</a> <a class="btn-top" href="login.html">Se connecter</a></nav>
 </header>
 <section class="hero">
-<h1>كلشي ديال ECT فبلاصة وحدة</h1>
-<p>Ressources, fiches et quiz pour Économie • Droit • Informatique — tout est réuni ici.</p>
+<h1>منصة ECT فيها كلشي</h1>
+<p>Ressources, fiches et quiz pour Economie • Droit • Informatique – tout est réuni ici.</p>
 <div class="hero-line"></div>
 </section>
 <section class="grid">
-<div class="card"><div class="card-icon">▃▅▇</div><h2>Économie</h2><ul><li><i>✓</i> Concepts</li><li><i>✓</i> micro & macro</li><li><i>✓</i> fiches & quiz</li></ul><a class="btn-card" href="#">Explorer →</a></div>
-<div class="card"><div class="card-icon transparent">⚖</div><h2>Droit</h2><ul><li><i>•</i> Cours</li><li><i>•</i> cas pratiques</li><li><i>•</i> annales</li></ul><a class="btn-card" href="#">Explorer →</a></div>
-<div class="card"><div class="card-icon transparent">{=}</div><h2>Informatique</h2><ul><li><i>•</i> Algorithme</li><li><i>•</i> Excel</li><li><i>•</i> programmation</li><li><i>•</i> quiz</li></ul><a class="btn-card" href="#">Explorer →</a></div>
+<div class="card"><div class="card-icon">📚</div><h2>Economie</h2><ul><li><i>✓</i> Concepts</li><li><i>✓</i> micro & macro</li><li><i>✓</i> fiches & quiz</li></ul><a class="btn-card" href="#">Voir cours →</a></div>
+<div class="card"><div class="card-icon transparent">⚖️</div><h2>Droit</h2><ul><li><i>✓</i> Cours</li><li><i>✓</i> cas pratiques</li><li><i>✓</i> annales</li></ul><a class="btn-card" href="#">Voir cours →</a></div>
+<div class="card"><div class="card-icon transparent">{;}</div><h2>Informatique</h2><ul><li><i>✓</i> Algorithme</li><li><i>✓</i> Excel</li><li><i>✓</i> programmation</li><li><i>✓</i> quiz</li></ul><a class="btn-card" href="#">Voir cours →</a></div>
 </section>
-<footer>Fait par <b>elhajli souhail</b> • Instagram <b>@pykatso5</b> • Contact: <b>contact@ect.ma</b></footer>
+<footer>Fait par <b>elhajli souhail</b> • Instagram <b>@pykato5</b> • Contact: <b>contact@ect.ma</b></footer>
 </body>
 </html>
