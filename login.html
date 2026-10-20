@@ -1,27 +1,62 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ECT.MA - Code d'accès</title>
-<style>body{background:#0f0f10;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}.box{background:#1a1a1e;border:1px solid #333;border-radius:20px;padding:30px;width:100%;max-width:360px;text-align:center}input{width:100%;background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:12px;margin:10px 0;color:#fff}.btn{width:100%;background:#e6ff32;color:#000;border:none;padding:12px;border-radius:99px;font-weight:800;cursor:pointer}#msg{color:#ff4444;font-size:13px;margin-top:10px}.logo{font-weight:800;font-size:28px}.logo span{color:#e6ff32}</style></head><body>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECT.MA - Code d'accès</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Cairo:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f10;color:#fff;font-family:'Inter',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.box{background:#1a1a1e;border:1px solid #26262b;border-radius:22px;padding:35px 28px;width:100%;max-width:380px;text-align:center;position:relative}
+.box::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:90px;height:8px;background:#e6ff32;border-radius:999px}
+.logo{font-weight:800;font-size:32px;letter-spacing:-1px}
+.logo span{color:#e6ff32}
+h2{font-family:'Cairo',sans-serif;margin:18px 0 6px;font-size:26px}
+.sub{color:#6b7280;font-size:13px;margin-bottom:20px}
+input{width:100%;background:#111113;border:1px solid #2a2a30;border-radius:12px;padding:14px 16px;margin:8px 0;color:#fff;font-size:15px;outline:none}
+input:focus{border-color:#e6ff32}
+.btn{width:100%;background:#e6ff32;color:#000;border:none;padding:14px;border-radius:999px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px}
+.btn:hover{background:#d4eb2e}
+#msg{color:#ff4d4d;font-size:13px;margin-top:14px;min-height:18px}
+.foot{margin-top:20px;color:#4b5563;font-size:12px}
+</style>
+</head>
+<body>
 <div class="box">
 <div class="logo">ECT<span>.MA</span></div>
-<h2 style="margin:15px 0">Code d'accès</h2>
-<p style="color:#666;font-size:13px">دخل الكود باش تدخل للسيت</p>
-<input id="nom" placeholder="Smiytek">
-<input id="code" placeholder="Code d'accès">
+<h2>Code d'accès</h2>
+<p class="sub">دخل سميتك والكود باش تدخل للسيت</p>
+<input id="nom" type="text" placeholder="Smiytek - سميتك">
+<input id="code" type="text" placeholder="Code - SOUHAIL22#">
 <button class="btn" onclick="check()">Entrer →</button>
 <p id="msg"></p>
+<div class="foot">الكود هو : SOUHAIL22#</div>
 </div>
+
 <script>
+// الى كان داخل من قبل، يدخل نيشان
+if(localStorage.getItem('ect_logged')=='1'){
+  location.href='index.html';
+}
+
 function check(){
-let n=document.getElementById('nom').value;
-let c=document.getElementById('code').value;
-if(c==="SOUHAIL22#"){
-localStorage.setItem('ect_logged','1');
-localStorage.setItem('ect_user',JSON.stringify({nom:n}));
-location.href='index.html';
-}else{
-document.getElementById('msg').innerText='Code غالط ❌';
+  let n = document.getElementById('nom').value.trim();
+  let c = document.getElementById('code').value.trim();
+  let msg = document.getElementById('msg');
+
+  if(n==""){
+    msg.innerText="دخل سميتك أولا ❌";
+    return;
+  }
+  if(c==="SOUHAIL22#"){
+    localStorage.setItem('ect_logged','1');
+    localStorage.setItem('ect_user',JSON.stringify({nom:n}));
+    location.href='index.html';
+  }else{
+    msg.innerText="Code غالط ❌ جرب SOUHAIL22#";
+  }
 }
-}
-if(localStorage.getItem('ect_logged')=='1'){location.href='index.html';}
 </script>
-</body></html>
+</body>
+</html>
