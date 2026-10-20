@@ -1,51 +1,119 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cadre juridique - Quiz | ECT.ma</title>
-<style>
-body{font-family:system-ui;background:#18181b;color:#fff;margin:0;padding:20px}
-.container{max-width:800px;margin:auto}
-.card{background:#27272a;padding:20px;border-radius:16px;margin:15px 0}
-.btn{padding:10px 20px;border-radius:999px;border:1px solid #e6ff32;color:#e6ff32;background:transparent;cursor:pointer;margin:5px}
-.btn.active{background:#e6ff32;color:#000}
-.option{display:block;width:100%;text-align:left;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #3f3f46;background:#3f3f46;color:#fff;cursor:pointer}
-.option.correct{background:#22c55e} .option.wrong{background:#ef4444}
-#progress{height:6px;background:#3f3f46;border-radius:99px;margin:15px 0} #bar{height:100%;background:#e6ff32;width:0%;border-radius:99px}
-</style>
-</head>
-<body>
-<div class="container">
-<a href="droit.html" style="color:#e6ff32">← Retour Droit</a>
-<h1>Cadre juridique de l'entreprise</h1>
-<div><button class="btn active" id="btnStd" onclick="setLevel('std')">Standard (40 Q)</button>
-<button class="btn" id="btnDiff" onclick="setLevel('diff')">Difficile (40 Q)</button></div>
-<div id="progress"><div id="bar"></div></div>
-<div id="quiz" class="card"></div>
-<div style="display:flex;justify-content:space-between"><span id="score">0/0</span><button class="btn" onclick="nextQ()">Suivant →</button></div>
-</div>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadre juridique 40Q - ECT</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',sans-serif}</style></head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50"><div class="max-w-5xl mx-auto flex justify-between items-center">
+<div class="flex items-center space-x-3"><span class="text-3xl">⚖️</span><div><h1 class="text-xl font-bold text-amber-400">Quiz Juridique - Droit</h1><p class="text-xs text-slate-400">Cadre juridique de l'entreprise - 40Q</p></div></div>
+<div id="quiz-header-info" class="hidden flex gap-4"><div class="bg-slate-700 px-3 py-1 rounded-lg text-sm">⏱️ <span id="timer" class="font-bold text-amber-400">00:00</span></div><div class="bg-slate-700 px-3 py-1 rounded-lg text-sm">🎯 <span id="current-q-num" class="font-bold text-emerald-400">1</span>/40</div></div></div></header>
+<main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+<div id="selection-screen" class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 sm:p-10 shadow-2xl text-center">
+<h2 class="text-2xl sm:text-3xl font-extrabold text-amber-400 mb-4">Choisissez le niveau 🎯</h2>
+<p class="text-slate-300 mb-8">40 questions avec correction instantanée.</p>
+<div class="grid md:grid-cols-2 gap-6">
+<div onclick="startQuiz('normal')" class="cursor-pointer bg-slate-700/50 border-2 border-emerald-500/40 rounded-xl p-6 text-left hover:scale-[1.02] transition"><div class="flex justify-between mb-4"><span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full">Standard</span><span>🟢</span></div><h3 class="text-xl font-bold mb-2">Quiz 1 : Fondamentaux</h3><p class="text-sm text-slate-400">40 questions essentielles.</p><div class="mt-6 pt-4 border-t border-slate-600/50 flex justify-between text-xs"><span>📋 40 Q</span><span class="text-emerald-400">Commencer →</span></div></div>
+<div onclick="startQuiz('hard')" class="cursor-pointer bg-slate-700/50 border-2 border-amber-500/40 rounded-xl p-6 text-left hover:scale-[1.02] transition"><div class="flex justify-between mb-4"><span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full">Difficile</span><span>🔥</span></div><h3 class="text-xl font-bold mb-2">Quiz 2 : Cas Complexes</h3><p class="text-sm text-slate-400">40 questions avancées.</p><div class="mt-6 pt-4 border-t border-slate-600/50 flex justify-between text-xs"><span>📋 40 Q</span><span class="text-amber-400">Commencer →</span></div></div>
+</div></div>
+<div id="quiz-screen" class="hidden"><div class="w-full bg-slate-800 rounded-full h-3 mb-6 border border-slate-700"><div id="progress-bar" class="bg-gradient-to-r from-emerald-400 to-amber-400 h-3 rounded-full" style="width:0%"></div></div>
+<div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8"><div class="mb-6"><span id="question-tag" class="inline-block bg-amber-400/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-md mb-3 border border-amber-400/20">Question</span><h3 id="question-text" class="text-lg font-semibold">--</h3></div><div id="options-container" class="space-y-3 mb-6"></div>
+<div id="rationale-box" class="hidden p-4 rounded-xl border mb-6 text-sm"><div id="rationale-title" class="font-bold mb-1"></div><div id="rationale-text"></div></div>
+<div class="flex justify-between pt-4 border-t border-slate-700"><button onclick="quitQuiz()" class="text-slate-400 text-sm">Quitter</button><button id="next-btn" onclick="nextQuestion()" disabled class="bg-amber-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl disabled:opacity-40">Suivant →</button></div></div></div>
+<div id="result-screen" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-8 text-center"><div class="text-5xl mb-4">🏆</div><h2 class="text-3xl font-extrabold text-amber-400 mb-2">Résultat</h2><div class="bg-slate-900 border border-slate-700 rounded-xl p-6 max-w-sm mx-auto mb-8"><div class="text-4xl font-extrabold text-emerald-400"><span id="final-score">0</span>/40</div><div id="score-percentage" class="mt-3 text-sm font-semibold text-amber-400">0%</div></div><button onclick="showSelectionScreen()" class="bg-amber-500 text-slate-950 font-bold px-8 py-3 rounded-xl">Retour 🔄</button></div>
+</main><footer class="bg-slate-800/60 border-t border-slate-800 p-4 text-center text-xs text-slate-500">© 2026 CPGE ECT</footer>
 <script>
-let level='std';
-const data={
-std:[
-{q:"Qu'est-ce qu'une entreprise au sens juridique?",o:["Une personne physique","Une organisation autonome produisant des biens/services","Uniquement une société","Une administration"],a:1},
-{q:"Personne physique c'est:",o:["Une société","Un individu avec droits et obligations","L'Etat","Un groupe"],a:1},
-// زيد 38 سؤال هنايا بنفس الشكل...
-{q:"Le commerçant est défini par:",o:["Article 6 du code de commerce","Article 1","Loi 17-95","Dahir"],a:0},
+const quizData={
+normal:[{q:"1. Definition entreprise?",options:["Pers physique","Unite eco/juridique organisee","Batiment","Marque"],correct:1,rationale:"Unite eco et juridique"},
+{q:"2. Personne physique?",options:["Societe","Individu droits/oblig","Etat","Fonds"],correct:1,rationale:"Individu"},
+{q:"3. Personne morale?",options:["Humain","Groupement perso juridique","EI","Commercant"],correct:1,rationale:"Groupement"},
+{q:"4. Commercant Art?",options:["Art 6 Code com","Art 1 civil","Art 10","Art 2"],correct:0,rationale:"Art 6"},
+{q:"5. Condition commercant?",options:["Diplome","Actes commerce habituel","Salarie","18 seul"],correct:1,rationale:"Habitude"},
+{q:"6. RC?",options:["Facultatif","Obligatoire commercant","Interdit","Assoc"],correct:1,rationale:"Obligatoire"},
+{q:"7. Fonds comprend?",options:["Local seul","Corporels+incorporels","Dettes seul","Stock seul"],correct:1,rationale:"Les deux"},
+{q:"8. Incorporel?",options:["Materiel","Clientele achalandage","Marchandises","Vehicule"],correct:1,rationale:"Clientele"},
+{q:"9. Corporel?",options:["Bail","Materiel outillage","Enseigne","Achalandage"],correct:1,rationale:"Materiel"},
+{q:"10. Capacite?",options:["12 ans","18 ou emancipe","25","Aucune"],correct:1,rationale:"18 ans"},
+{q:"11. Artisan commercant?",options:["Toujours","Non sauf actes com","Si local","Jamais"],correct:1,rationale:"Sauf actes"},
+{q:"12. EI?",options:["Societe","Une personne","SA","SARL"],correct:1,rationale:"Une personne"},
+{q:"13. Avantage EI?",options:["Resp limitee","Simplicite","Capital","Perso morale"],correct:1,rationale:"Simple"},
+{q:"14. Inconvenient EI?",options:["Formalites","Resp illimitee","Impots faibles","Pas clientele"],correct:1,rationale:"Illimitee"},
+{q:"15. Societe def?",options:["Art 982 DOC","Art 1","Art 6","Art 10"],correct:0,rationale:"982"},
+{q:"16. Apport numeraire?",options:["Brevet","Argent","Immeuble","Travail"],correct:1,rationale:"Argent"},
+{q:"17. Apport nature?",options:["Argent","Bien autre que argent","Travail","Dette"],correct:1,rationale:"Nature"},
+{q:"18. Apport industrie?",options:["Argent","Travail savoir","Immeuble","Machine"],correct:1,rationale:"Savoir"},
+{q:"19. Contrat soc?",options:["2 associes min","1 seul","10","Aucun"],correct:0,rationale:"2 min"},
+{q:"20. Affectio?",options:["Volonte collaborer","Capital","Siege","Benefice"],correct:0,rationale:"Volonte"},
+{q:"21. SARL min?",options:["1","7","2","5"],correct:0,rationale:"1 depuis 2015"},
+{q:"22. Capital SARL?",options:["10000","Pas minimum","100k","50k"],correct:1,rationale:"Pas minimum"},
+{q:"23. SA min?",options:["1","5 actionnaires","2","7"],correct:1,rationale:"5"},
+{q:"24. Capital SA?",options:["10k","300k","1M","Pas min"],correct:1,rationale:"300k"},
+{q:"25. Gerant SARL?",options:["Toujours associe","Mandataire","Salarie","Fonctionnaire"],correct:1,rationale:"Mandataire"},
+{q:"26. AGO?",options:["Modifie statuts","Approuve comptes","Dissout","Augmente"],correct:1,rationale:"Comptes"},
+{q:"27. AGE?",options:["Comptes","Modifie statuts","Nomination","Dividende"],correct:1,rationale:"Statuts"},
+{q:"28. Perso morale acquise?",options:["Signature","Immat RC","Compte","Bail"],correct:1,rationale:"Immat"},
+{q:"29. Siege det?",options:["Couleur","Nationalite tribunal","Salaries","Capital"],correct:1,rationale:"Tribunal"},
+{q:"30. Objet social?",options:["Adresse","Activite","Nom","Capital"],correct:1,rationale:"Activite"},
+{q:"31. Denomination?",options:["Nom societe","Nom gerant","Nom client","Marque"],correct:0,rationale:"Nom soc"},
+{q:"32. Compta commercant?",options:["Aucune","Compta reguliere","Factures","Perso"],correct:1,rationale:"Reguliere"},
+{q:"33. Prescription?",options:["2 ans","5 ans","10","30"],correct:1,rationale:"5 ans"},
+{q:"34. Liberte commerce?",options:["Interdit","Liberte entreprendre loi","Pas concurrence","Monopole"],correct:1,rationale:"Liberte"},
+{q:"35. Concurrence deloyale?",options:["Baisser prix","Contraire usages honnetes","Pub","Innover"],correct:1,rationale:"Deloyale"},
+{q:"36. Tribunal competent?",options:["Admin","Trib commerce","Famille","Commune"],correct:1,rationale:"Commerce"},
+{q:"37. Acte nature?",options:["Achat perso","Achat revendre","Mariage","Don"],correct:1,rationale:"Revendre"},
+{q:"38. Acte forme?",options:["Lettre change","Maison","Travail","Don"],correct:0,rationale:"Lettre"},
+{q:"39. Acte mixte?",options:["2 com","Com et non-com","2 non","Etats"],correct:1,rationale:"Mixte"},
+{q:"40. Preuve commercants?",options:["Libre","Ecrite oblig","Temoins","Impossible"],correct:0,rationale:"Libre"},
 ],
-diff:[
-{q:"Différence entre commerçant de fait et de droit?",o:["Aucune","De fait exerce sans registre, de droit immatriculé","De droit est illégal","De fait est une société"],a:1},
-{q:"Le fonds de commerce comprend:",o:["Uniquement le local","Eléments corporels et incorporels","Uniquement les dettes","Uniquement le stock"],a:1},
-// زيد 38 سؤال هنايا...
+hard:[{q:"1. Fait vs droit?",options:["Aucune","Fait sans RC/droit immat","Droit illegal","Fait salarie"],correct:1,rationale:"Difference RC"},
+{q:"2. Defaut immat?",options:["Aucune","Inopposable+amende","Prison 10","Fermeture"],correct:1,rationale:"Sanction"},
+{q:"3. Fonds patrimoine?",options:["Complet","Universalite fait","Immeuble","Non"],correct:1,rationale:"Universalite"},
+{q:"4. Nantissement?",options:["Vendre","Garantir credit","Dissoudre","Licencier"],correct:1,rationale:"Garantie"},
+{q:"5. Vente fonds?",options:["Rien","Ecrit+pub","Oral","Poignee"],correct:1,rationale:"Formalites"},
+{q:"6. Credit bail?",options:["Don","Location option achat","Vente","Pret"],correct:1,rationale:"Leasing"},
+{q:"7. Droit bail?",options:["Corporel","Incorporel occuper","Meuble","Dette"],correct:1,rationale:"Incorporel"},
+{q:"8. Clause non concurrence?",options:["Interdite","Valable limitee","Nulle","Illimitee"],correct:1,rationale:"Limitee"},
+{q:"9. Soc participation?",options:["Avec RC","Occulte sans perso","SA","SARL"],correct:1,rationale:"Occulte"},
+{q:"10. SNC resp?",options:["Limitee","Solidaire indefinie","Nulle","10%"],correct:1,rationale:"Solidaire"},
+{q:"11. SCS?",options:["Que commandites","Commandites+commanditaires","Que commanditaires","Gerants"],correct:1,rationale:"Les deux"},
+{q:"12. SARL parts?",options:["Negociables","Non negociables cessibles","Libres","Actions"],correct:1,rationale:"Cessibles"},
+{q:"13. SA actions?",options:["Non cessibles","Librement negociables","Interdites","Parts"],correct:1,rationale:"Negociables"},
+{q:"14. SAS Maroc?",options:["N'existe pas loi classique","Existe comme SA","Meme SNC","Interdite"],correct:0,rationale:"Pas loi"},
+{q:"15. Abus majorite?",options:["Interet soc","Contraire interet general majoritaires","Legal","Obligatoire"],correct:1,rationale:"Abus"},
+{q:"16. Abus minorite?",options:["Minorite bloque abusivement","Majorite decide","Legal","Dissolution"],correct:0,rationale:"Blocage"},
+{q:"17. Dissolution justes motifs?",options:["Impossible","Possible si paralysie","Jamais","Auto 1 an"],correct:1,rationale:"Justes motifs"},
+{q:"18. Gerant ad nutum?",options:["Jamais","Revocable tout moment","Juge","10 ans"],correct:1,rationale:"Ad nutum"},
+{q:"19. Resp gerant faute?",options:["Jamais","Oui patrimoine perso","Penale seul","Si SA"],correct:1,rationale:"Faute gestion"},
+{q:"20. Convention reglem?",options:["Contrat soc/gerant controle","Normal","Interdite","Client"],correct:0,rationale:"Controle"},
+{q:"21. Capital variable?",options:["Interdit","Peut varier sans statuts","Toujours SA","Obligatoire"],correct:1,rationale:"Variable"},
+{q:"22. Apporteur industrie SNC?",options:["Interdit","Partage benefices/pertes","Ne participe pas","Pas associe"],correct:1,rationale:"Partage"},
+{q:"23. Nullite vice?",options:["Jamais","Oui dol erreur","Si pas capital","Toujours"],correct:1,rationale:"Vice"},
+{q:"24. Siege fictif?",options:["Valable","Nul+penale","Obligatoire","Recommande"],correct:1,rationale:"Fictif nul"},
+{q:"25. Succursale filiale?",options:["Pareils","Succursale sans perso filiale avec","Filiale sans","Succursale SA"],correct:1,rationale:"Difference"},
+{q:"26. Location gerance?",options:["Interdite","Loue exploitation gerant","Vente","Donation"],correct:1,rationale:"Location gerance"},
+{q:"27. Conditions loc gerance?",options:["Aucune","2 ans+ecrit+pub","1 jour","Oral"],correct:1,rationale:"2 ans"},
+{q:"28. Theorie accessoire?",options:["Civil reste civil","Civil devient commercial accessoire","Jamais","Toujours civil"],correct:1,rationale:"Accessoire"},
+{q:"29. Solidarite?",options:["Jamais","Presumee commercants","Interdite","Facultative"],correct:1,rationale:"Presumee"},
+{q:"30. Preuve contre non-com?",options:["Libre","Ecrit >10k DH","Temoins","Impossible"],correct:1,rationale:">10k"},
+{q:"31. Competence territoriale?",options:["Domicile ou exec","Rabat","Casa","Juge"],correct:0,rationale:"Domicile"},
+{q:"32. Refere?",options:["Impossible","Urgence provisoire","Fond","Appel"],correct:1,rationale:"Urgence"},
+{q:"33. Injonction payer?",options:["Lente","Rapide recouvrement","Interdite","Penale"],correct:1,rationale:"Rapide"},
+{q:"34. Titre exec?",options:["Aucun","Permet exec forcee","Info","Annule dette"],correct:1,rationale:"Executoire"},
+{q:"35. Protet?",options:["Facultatif","Constat non paiement","Paiement","Don"],correct:1,rationale:"Huissier"},
+{q:"36. Aval?",options:["Interdit","Caution solidaire","Annulation","Partiel"],correct:1,rationale:"Aval"},
+{q:"37. Escompte?",options:["Don","Banque achete avant echeance","Vente fonds","Pret gratuit"],correct:1,rationale:"Escompte"},
+{q:"38. Cessation paiements?",options:["Richesse","Impossibilite payer exigibles","Payer trop","Benefice"],correct:1,rationale:"Cessation"},
+{q:"39. Sauvegarde?",options:["N'existe pas","Preventive avant cessation","Liquidation","Penale"],correct:1,rationale:"Preventive"},
+{q:"40. Syndic?",options:["Aucun","Administre et plan","Juge","Client"],correct:1,rationale:"Syndic"},
 ]
 };
-// باقي الكود باش يخدم الكويز
-let i=0,sc=0;
-function setLevel(l){level=l;document.getElementById('btnStd').classList.toggle('active',l=='std');document.getElementById('btnDiff').classList.toggle('active',l=='diff');i=0;sc=0;showQ()}
-function showQ(){const q=data[level][i];document.getElementById('quiz').innerHTML=`<h3>Q${i+1}/${data[level].length} : ${q.q}</h3>`+q.o.map((op,idx)=>`<button class='option' onclick='check(${idx})'>${op}</button>`).join('');document.getElementById('bar').style.width=((i)/data[level].length*100)+'%';document.getElementById('score').innerText=`${sc}/${i}`}
-function check(idx){const q=data[level][i];const btns=document.querySelectorAll('.option');if(idx==q.a){btns[idx].classList.add('correct');sc++;}else{btns[idx].classList.add('wrong');btns[q.a].classList.add('correct');}setTimeout(nextQ,800)}
-function nextQ(){i++;if(i>=data[level].length){document.getElementById('quiz').innerHTML=`<h2>Terminé! Score ${sc}/${data[level].length}</h2><button class='btn' onclick='i=0;sc=0;showQ()'>Recommencer</button>`;return;}showQ()}
-showQ();
-</script>
-</body>
-</html>
+let currentQuiz=null,currentQ=0,score=0,timerInt=null,seconds=0;
+function startQuiz(type){currentQuiz=quizData[type];currentQ=0;score=0;seconds=0;document.getElementById('selection-screen').classList.add('hidden');document.getElementById('quiz-screen').classList.remove('hidden');document.getElementById('quiz-header-info').classList.remove('hidden');document.getElementById('result-screen').classList.add('hidden');clearInterval(timerInt);timerInt=setInterval(()=>{seconds++;let m=String(Math.floor(seconds/60)).padStart(2,'0');let s=String(seconds%60).padStart(2,'0');document.getElementById('timer').innerText=m+':'+s;},1000);showQuestion();}
+function showQuestion(){const q=currentQuiz[currentQ];document.getElementById('current-q-num').innerText=currentQ+1;document.getElementById('question-text').innerText=q.q;document.getElementById('progress-bar').style.width=((currentQ)/40*100)+'%';document.getElementById('options-container').innerHTML=q.options.map((opt,i)=>`<button onclick="selectOption(${i})" class="w-full text-left p-3 rounded-xl border border-slate-600 bg-slate-700/50 hover:bg-slate-700 transition text-sm">${opt}</button>`).join('');document.getElementById('rationale-box').classList.add('hidden');document.getElementById('next-btn').disabled=true;}
+function selectOption(i){const q=currentQuiz[currentQ];const opts=document.querySelectorAll('#options-container button');opts.forEach(b=>b.disabled=true);if(i===q.correct){opts[i].classList.add('bg-emerald-500/20','border-emerald-500','text-emerald-300');score++;document.getElementById('rationale-box').className='p-4 rounded-xl border mb-6 text-sm bg-emerald-500/10 border-emerald-500/30';document.getElementById('rationale-title').innerHTML='✅ Correct';}else{opts[i].classList.add('bg-red-500/20','border-red-500','text-red-300');opts[q.correct].classList.add('bg-emerald-500/20','border-emerald-500');document.getElementById('rationale-box').className='p-4 rounded-xl border mb-6 text-sm bg-red-500/10 border-red-500/30';document.getElementById('rationale-title').innerHTML='❌ Incorrect - Bonne reponse: '+q.options[q.correct];}
+document.getElementById('rationale-text').innerText=q.rationale;document.getElementById('rationale-box').classList.remove('hidden');document.getElementById('next-btn').disabled=false;}
+function nextQuestion(){currentQ++;if(currentQ>=40){endQuiz();}else{showQuestion();}}
+function endQuiz(){clearInterval(timerInt);document.getElementById('quiz-screen').classList.add('hidden');document.getElementById('result-screen').classList.remove('hidden');document.getElementById('final-score').innerText=score;document.getElementById('score-percentage').innerText=Math.round(score/40*100)+'% - Temps: '+document.getElementById('timer').innerText;}
+function quitQuiz(){clearInterval(timerInt);showSelectionScreen();}
+function showSelectionScreen(){clearInterval(timerInt);document.getElementById('selection-screen').classList.remove('hidden');document.getElementById('quiz-screen').classList.add('hidden');document.getElementById('result-screen').classList.add('hidden');document.getElementById('quiz-header-info').classList.add('hidden');}
+</script></body></html>
