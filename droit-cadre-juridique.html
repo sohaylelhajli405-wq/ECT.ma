@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz - Cadre juridique | ECT.ma</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&display=swap" rel="stylesheet">
+<style>
+body{font-family:system-ui;background:#181818;color:#fff}
+.logo{font-family:'Syne',sans-serif;font-weight:800}
+</style>
+</head>
+<body class="bg-[#181818] text-white min-h-screen flex flex-col">
+
+<!-- HEADER نفس ديال موقعك -->
+<header class="px-6 py-4 flex justify-between items-center border-b border-[#262626] sticky top-0 z-50 bg-[#181818]">
+<div class="logo text-[22px]">ECT<span class="text-[#e6ff32]">.</span>MA</div>
+<nav class="text-[13px] flex gap-4">
+<a href="index.html" class="text-[#a1a1aa] hover:text-white">Accueil</a>
+<a href="droit.html" class="text-white">Droit</a>
+<a href="a-propos.html" class="text-[#a1a1aa] hover:text-white">A propos</a>
+</nav>
+</header>
+
+<!-- Infos quiz -->
+<div id="quiz-header-info" class="hidden px-6 py-3 flex gap-3 text-[12px] bg-[#1a1a1a] border-b border-[#262626]">
+<div class="border border-[#262626] rounded-full px-3 py-1">⏱️ <span id="timer" class="text-[#e6ff32] font-bold">00:00</span></div>
+<div class="border border-[#262626] rounded-full px-3 py-1">🎯 <span id="current-q-num" class="text-[#e6ff32] font-bold">1</span> / 40</div>
+</div>
+
+<main class="max-w-[900px] mx-auto w-full px-6 py-10 flex-grow">
+
+<!-- SELECTION SCREEN بنفس ستايل cards ديالك -->
+<div id="selection-screen">
+<h1 class="text-[36px] font-[800] leading-[1.1] mb-2">Cadre juridique de la vie de l'entreprise</h1>
+<p class="text-[#a1a1aa] text-[14px] mb-8">Choisissez le niveau - 40 questions interactives avec correction</p>
+
+<div class="grid md:grid-cols-2 gap-5">
+<!-- Card Standard -->
+<div onclick="startQuiz('normal')" class="cursor-pointer bg-[#1a1a1a] border border-[#262626] rounded-[18px] p-[26px] relative hover:border-[#e6ff32]/50 transition hover:scale-[1.01]">
+<div class="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[88px] h-[8px] bg-[#e6ff32] rounded-full"></div>
+<div class="flex justify-between mb-4"><span class="text-[10px] border border-[#22c55e] text-[#22c55e] px-3 py-1 rounded-full font-bold">NIVEAU FACILE</span><span>🟢</span></div>
+<h3 class="text-[20px] font-bold mb-2">Notions et Fondamentaux</h3>
+<p class="text-[13px] text-[#a1a1aa] leading-relaxed">Caractéristiques de la règle de droit, branches et sources.</p>
+<div class="mt-6 pt-4 border-t border-[#262626] flex justify-between text-[12px]"><span class="text-[#a1a1aa]">📋 40 questions</span><span class="text-[#e6ff32]">Commencer →</span></div>
+</div>
+
+<!-- Card Difficile -->
+<div onclick="startQuiz('hard')" class="cursor-pointer bg-[#1a1a1a] border border-[#262626] rounded-[18px] p-[26px] relative hover:border-[#e6ff32]/50 transition hover:scale-[1.01]">
+<div class="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[88px] h-[8px] bg-[#ef4444] rounded-full"></div>
+<div class="flex justify-between mb-4"><span class="text-[10px] border border-[#ef4444] text-[#ef4444] px-3 py-1 rounded-full font-bold">NIVEAU DIFFICILE</span><span>🔥</span></div>
+<h3 class="text-[20px] font-bold mb-2">Analyse et Cas Complexes</h3>
+<p class="text-[13px] text-[#a1a1aa] leading-relaxed">Hiérarchie des normes, conflits de lois et cas pratiques.</p>
+<div class="mt-6 pt-4 border-t border-[#262626] flex justify-between text-[12px]"><span class="text-[#a1a1aa]">📋 40 questions</span><span class="text-[#e6ff32]">Commencer →</span></div>
+</div>
+</div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen" class="hidden">
+<div class="w-full bg-[#1a1a1a] rounded-full h-[8px] mb-6 border border-[#262626] overflow-hidden"><div id="progress-bar" class="bg-[#e6ff32] h-full transition-all" style="width:0%"></div></div>
+<div class="bg-[#1a1a1a] border border-[#262626] rounded-[18px] p-6 sm:p-8">
+<div class="mb-6"><span class="text-[10px] bg-[#e6ff32]/10 text-[#e6ff32] px-3 py-1 rounded-full border border-[#e6ff32]/20">Question de droit</span><h3 id="question-text" class="text-[18px] font-semibold mt-3 leading-snug"></h3></div>
+<div id="options-container" class="space-y-3 mb-6"></div>
+<div id="rationale-box" class="hidden p-4 rounded-xl border text-[13px] mb-6"></div>
+<div class="flex justify-between items-center pt-4 border-t border-[#262626]"><button onclick="quitQuiz()" class="text-[#a1a1aa] hover:text-red-400 text-[13px]">Quitter</button><button id="next-btn" onclick="nextQuestion()" disabled class="bg-[#e6ff32] text-black font-bold px-6 py-2.5 rounded-full disabled:opacity-40">Suivante →</button></div>
+</div>
+</div>
+
+<!-- RESULT -->
+<div id="result-screen" class="hidden bg-[#1a1a1a] border border-[#262626] rounded-[18px] p-8 text-center">
+<div class="text-[48px] mb-4">🏆</div><h2 class="text-[28px] font-extrabold mb-2">Résultat</h2><p class="text-[#a1a1aa] text-[13px] mb-6">Bravo !</p>
+<div class="bg-[#181818] border border-[#262626] rounded-xl p-6 max-w-sm mx-auto mb-8"><div class="text-[36px] font-extrabold text-[#e6ff32]"><span id="final-score">0</span> / 40</div><div id="score-percentage" class="mt-2 text-[13px] text-[#a1a1aa]">0%</div></div>
+<button onclick="showSelectionScreen()" class="bg-[#e6ff32] text-black font-bold px-8 py-3 rounded-full">Retour 🔄</button>
+</div>
+
+</main>
+
+<footer class="border-t border-[#262626] p-4 text-center text-[11px] text-[#555]">© 2026 ECT.ma - CPGE</footer>
+
+<script>
+const quizData = {
+normal: [
+{ q: "Qu'est-ce que le droit objectif ?", options: ["L'ensemble des prérogatives individuelles","L'ensemble des règles juridiques obligatoires régissant la vie en société","Des préceptes moraux","Décisions des tribunaux uniquement"], correct: 1, rationale: "Le droit objectif désigne l'ensemble des règles en vigueur qui s'imposent à tous." },
+{ q: "Le droit subjectif correspond à :", options: ["Organisation de l'Etat","Prérogatives individuelles reconnues aux sujets de droit","Règles d'ordre public","Hiérarchie des lois"], correct: 1, rationale: "Droits individuels reconnus par l'ordre juridique." },
+{ q: "La règle de droit est abstraite car :", options: ["Difficile à appliquer","Impersonnelle et générale","Concerne personnes morales uniquement","Dépend de la volonté"], correct: 1, rationale: "Elle s'applique à toute personne remplissant les conditions." },
+{ q: "Règle impérative ?", options: ["Peut être écartée par contrat","S'impose, on ne peut y déroger","Sans sanction","Relève de la coutume"], correct: 1, rationale: "Ordre public, on ne peut y déroger." }
+],
+hard: [
+{ q: "Conflit décret Chef Gouvernement vs arrêté ministériel, qui prime ?", options: ["Arrêté","Décret Chef Gouvernement (hiérarchie)","Même valeur","Plus récent"], correct: 1, rationale: "Décret prime sur arrêté dans hiérarchie réglementaire." },
+{ q: "Exception non-rétroactivité en pénal ?", options: ["Loi plus sévère rétroactive","Loi plus douce rétroactive (lex mitior)","Aucune exception","Décision MP"], correct: 1, rationale: "Loi pénale plus douce rétroactive." }
+]
+};
+let currentQuiz=[], currentQuestionIndex=0, score=0, timerInterval=null, secondsElapsed=0;
+const selectionScreen=document.getElementById('selection-screen'), quizScreen=document.getElementById('quiz-screen'), resultScreen=document.getElementById('result-screen'), quizHeaderInfo=document.getElementById('quiz-header-info'), timerEl=document.getElementById('timer'), currentQNumEl=document.getElementById('current-q-num'), progressBar=document.getElementById('progress-bar'), questionText=document.getElementById('question-text'), optionsContainer=document.getElementById('options-container'), rationaleBox=document.getElementById('rationale-box'), nextBtn=document.getElementById('next-btn');
+function startQuiz(type){currentQuiz=quizData[type];currentQuestionIndex=0;score=0;secondsElapsed=0;selectionScreen.classList.add('hidden');resultScreen.classList.add('hidden');quizScreen.classList.remove('hidden');quizHeaderInfo.classList.remove('hidden');quizHeaderInfo.classList.add('flex');startTimer();loadQuestion();}
+function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{secondsElapsed++;let m=String(Math.floor(secondsElapsed/60)).padStart(2,'0'),s=String(secondsElapsed%60).padStart(2,'0');timerEl.textContent=m+':'+s;},1000);}
+function loadQuestion(){let qData=currentQuiz[currentQuestionIndex];currentQNumEl.textContent=currentQuestionIndex+1;progressBar.style.width=(currentQuestionIndex/currentQuiz.length*100)+'%';questionText.textContent=qData.q;optionsContainer.innerHTML='';rationaleBox.classList.add('hidden');nextBtn.disabled=true;qData.options.forEach((opt,idx)=>{let btn=document.createElement('button');btn.className="w-full text-left p-4 rounded-xl border border-[#262626] bg-[#181818] hover:bg-[#222] text-[13px]";btn.textContent=opt;btn.onclick=()=>selectOption(idx,qData.correct,qData.rationale);optionsContainer.appendChild(btn);});}
+function selectOption(sel,cor,rat){let btns=optionsContainer.querySelectorAll('button'), ok=sel===cor;btns.forEach((b,i)=>{b.disabled=true;if(i===cor){b.className="w-full text-left p-4 rounded-xl border border-[#22c55e] bg-[#22c55e]/20 text-[#22c55e] text-[13px]"}else if(i===sel&&!ok){b.className="w-full text-left p-4 rounded-xl border border-[#ef4444] bg-[#ef4444]/20 text-[#ef4444] text-[13px]"}});if(ok)score++;rationaleBox.className=ok?"p-4 rounded-xl border mb-6 text-[13px] bg-[#22c55e]/10 border-[#22c55e]/30 text-[#22c55e]":"p-4 rounded-xl border mb-6 text-[13px] bg-[#ef4444]/10 border-[#ef4444]/30 text-[#ef4444]";rationaleBox.innerHTML=(ok?"✅ Bonne réponse: ":"❌ Mauvaise: ")+rat;rationaleBox.classList.remove('hidden');nextBtn.disabled=false;}
+function nextQuestion(){currentQuestionIndex++;if(currentQuestionIndex<currentQuiz.length)loadQuestion();else finishQuiz();}
+function finishQuiz(){clearInterval(timerInterval);quizScreen.classList.add('hidden');quizHeaderInfo.classList.add('hidden');resultScreen.classList.remove('hidden');document.getElementById('final-score').textContent=score;document.getElementById('score-percentage').textContent=Math.round(score/currentQuiz.length*100)+'% de réussite';}
+function quitQuiz(){if(confirm("Quitter ?")){clearInterval(timerInterval);showSelectionScreen();}}
+function showSelectionScreen(){quizScreen.classList.add('hidden');resultScreen.classList.add('hidden');quizHeaderInfo.classList.add('hidden');quizHeaderInfo.classList.remove('flex');selectionScreen.classList.remove('hidden');}
+</script>
+</body>
+</html>
