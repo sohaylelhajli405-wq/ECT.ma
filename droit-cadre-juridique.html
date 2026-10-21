@@ -3,88 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quiz – Le cadre juridique de la vie de l'entreprise</title>
+<meta name="theme-color" content="#0b0b0d">
+<title>Quiz Droit – ECT.MA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f4f6fb;--card:#fff;--txt:#1f2937;--muted:#6b7280;--main:#2f5bea;--ok:#16a34a;--ko:#dc2626;--bd:#e5e7eb}
-  @media (prefers-color-scheme:dark){:root{--bg:#0f172a;--card:#1e293b;--txt:#e5e7eb;--muted:#94a3b8;--main:#6d8cff;--bd:#334155}}
+  :root{
+    --bg:#0b0b0d; --surface:#131317; --surface2:#191920; --line:#26262e;
+    --txt:#f4f4f6; --muted:#8b93a3; --accent:#e6ff1f; --accent-ink:#0b0b0d;
+    --ok:#34d399; --ko:#f87171; --radius:14px;
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
-  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
-  h1{font-size:1.5rem;margin:.2em 0}
-  .sub{color:var(--muted);margin-bottom:20px}
-  .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
-  button{font:inherit;cursor:pointer}
-  .btn{background:var(--main);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:600}
-  .btn.alt{background:transparent;color:var(--main);border:1px solid var(--main)}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .modes{display:grid;gap:10px;margin:16px 0}
-  .mode{text-align:left;background:var(--card);color:var(--txt);border:2px solid var(--bd);border-radius:12px;padding:14px}
-  .mode:hover{border-color:var(--main)}
-  .mode small{display:block;color:var(--muted)}
-  .bar{height:8px;background:var(--bd);border-radius:99px;overflow:hidden;margin:8px 0 16px}
-  .bar>div{height:100%;background:var(--main);width:0;transition:width .3s}
-  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem}
-  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:99px;color:#fff}
-  .tag.normal{background:#0ea5e9}.tag.difficile{background:#e11d48}
-  .q{font-size:1.15rem;font-weight:600;margin:12px 0}
-  .opt{display:block;width:100%;text-align:left;background:transparent;color:var(--txt);border:2px solid var(--bd);border-radius:10px;padding:12px;margin:8px 0}
-  .opt:hover:not(:disabled){border-color:var(--main)}
-  .opt.ok{border-color:var(--ok);background:rgba(22,163,74,.12)}
-  .opt.ko{border-color:var(--ko);background:rgba(220,38,38,.12)}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* Top bar */
+  .topbar{border-bottom:1px solid var(--line);background:rgba(11,11,13,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  .topbar-in{max-width:880px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:'Cairo',sans-serif;font-weight:900;font-size:1.15rem;letter-spacing:.02em}
+  .brand i{font-style:normal;color:var(--accent)}
+  .back{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .15s}
+  .back:hover{color:var(--accent)}
+
+  .wrap{max-width:880px;margin:0 auto;padding:48px 20px 96px}
+  .eyebrow{color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  h1{font-family:'Cairo','Inter',sans-serif;font-weight:900;font-size:clamp(2rem,5vw,2.8rem);line-height:1.15;margin:10px 0 12px;letter-spacing:-.01em}
+  .lead{color:var(--muted);max-width:62ch;margin:0}
+  .rule{width:48px;height:4px;border-radius:99px;background:var(--accent);margin:26px 0 34px}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .hidden{display:none!important}
+
+  /* Home */
+  .sec-title{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin:0 0 14px}
+  .modes{display:grid;gap:12px}
+  .mode{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;text-align:left;width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .15s,background .15s}
+  .mode:hover{border-color:var(--accent);transform:translateY(-2px);background:#1d1d25}
+  .mode .num{font-family:'Cairo',sans-serif;font-weight:900;font-size:1.5rem;color:var(--accent);min-width:48px;text-align:center;line-height:1}
+  .mode .num small{display:block;font-family:'Inter',sans-serif;font-weight:500;font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+  .mode .t{font-weight:600;font-size:1.02rem}
+  .mode .d{color:var(--muted);font-size:.86rem;margin-top:2px}
+  .mode .best{font-size:.78rem;color:var(--muted);text-align:right;white-space:nowrap}
+  .mode .best b{color:var(--txt)}
+  .mode .arrow{color:var(--accent);font-weight:700}
+  .tips{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;color:var(--muted);font-size:.82rem}
+  .tips span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+
+  /* Game */
+  .gm-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.88rem;color:var(--muted);font-weight:500}
+  .gm-head .q-count b{color:var(--txt);font-weight:700}
+  .gm-head .right{display:flex;gap:18px;align-items:center}
+  .gm-head .right b{color:var(--txt);font-variant-numeric:tabular-nums}
+  .bar{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin:14px 0 26px}
+  .bar>div{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .35s ease}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;border:1px solid}
+  .tag.normal{color:var(--accent);border-color:rgba(230,255,31,.45);background:rgba(230,255,31,.07)}
+  .tag.difficile{color:#fb923c;border-color:rgba(251,146,60,.5);background:rgba(251,146,60,.08)}
+  .q{font-size:clamp(1.2rem,3vw,1.5rem);font-weight:700;line-height:1.4;margin:16px 0 22px;letter-spacing:-.005em}
+  .opts{display:grid;gap:10px}
+  .opt{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:border-color .15s,background .15s}
+  .opt .k{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);font-size:.8rem;font-weight:700;color:var(--muted);transition:.15s}
+  .opt .tx{padding-top:2px}
+  .opt:hover:not(:disabled){border-color:#4a4a58;background:#1f1f28}
+  .opt:hover:not(:disabled) .k{border-color:var(--accent);color:var(--accent)}
   .opt:disabled{cursor:default}
-  .exp{margin-top:12px;padding:12px;border-left:4px solid var(--main);background:rgba(47,91,234,.08);border-radius:6px}
-  .score{font-size:3rem;font-weight:800;text-align:center;color:var(--main)}
-  .center{text-align:center}
-  .rev{border-bottom:1px solid var(--bd);padding:10px 0}
-  .rev:last-child{border:0}
-  .good{color:var(--ok)}.bad{color:var(--ko)}
-  .hidden{display:none}
+  .opt.ok{border-color:var(--ok);background:rgba(52,211,153,.09)}
+  .opt.ok .k{background:var(--ok);border-color:var(--ok);color:#06241a}
+  .opt.ko{border-color:var(--ko);background:rgba(248,113,113,.09)}
+  .opt.ko .k{background:var(--ko);border-color:var(--ko);color:#2a0a0a}
+  .opt.dim{opacity:.55}
+  .exp{margin-top:18px;padding:16px 18px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);border-left:3px solid var(--accent);font-size:.93rem;color:#d8dbe3}
+  .exp .v{display:block;font-weight:700;margin-bottom:4px}
+  .exp .v.ok{color:var(--ok)} .exp .v.ko{color:var(--ko)}
+  .gm-foot{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px}
+  .hint{color:var(--muted);font-size:.78rem}
+  kbd{font-family:inherit;font-size:.72rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;color:var(--txt);background:var(--surface2)}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:99px;padding:11px 26px;font-weight:700;font-size:.92rem;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);transition:transform .15s,box-shadow .15s,background .15s}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 22px rgba(230,255,31,.22)}
+  .btn:disabled{opacity:.3;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--txt);border-color:var(--line)}
+  .btn.ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);box-shadow:none}
+  .link{background:none;border:0;color:var(--muted);font-size:.85rem;padding:6px 0}
+  .link:hover{color:var(--ko)}
+
+  /* Result */
+  .res-top{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center}
+  .ring{position:relative;width:170px;height:170px}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .trk{stroke:var(--line)} .ring .prg{stroke:var(--accent);transition:stroke-dashoffset 1s ease}
+  .ring .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .c b{font-family:'Cairo',sans-serif;font-size:2.4rem;font-weight:900;line-height:1}
+  .ring .c span{color:var(--muted);font-size:.78rem;margin-top:4px}
+  .verdict{font-family:'Cairo',sans-serif;font-weight:900;font-size:1.6rem;line-height:1.2}
+  .verdict-sub{color:var(--muted);margin:6px 0 18px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 8px}
+  .stat{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .stat .l{color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .stat .v{font-weight:700;font-size:1.3rem;margin-top:2px;font-variant-numeric:tabular-nums}
+  .acts{display:flex;flex-wrap:wrap;gap:10px}
+  .rev-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:36px 0 6px}
+  .rev-head h2{margin:0;font-size:1.15rem}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:var(--surface2)}
+  .seg button{background:none;border:0;border-radius:99px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--muted)}
+  .seg button.on{background:var(--accent);color:var(--accent-ink)}
+  .rev{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .rev:last-child{border-bottom:0}
+  .rev .n{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:.8rem;font-weight:700}
+  .rev .n.ok{background:rgba(52,211,153,.14);color:var(--ok)} .rev .n.ko{background:rgba(248,113,113,.14);color:var(--ko)}
+  .rev .qq{font-weight:600}
+  .rev .a{font-size:.88rem;margin-top:6px}
+  .rev .a .ok{color:var(--ok)} .rev .a .ko{color:var(--ko)}
+  .rev .ee{color:var(--muted);font-size:.84rem;margin-top:6px}
+  .empty{color:var(--muted);text-align:center;padding:26px 0}
+
+  footer{color:var(--muted);text-align:center;font-size:.78rem;margin-top:40px}
+
+  @media(max-width:640px){
+    .wrap{padding:30px 16px 70px}.panel{padding:20px 16px}
+    .mode{grid-template-columns:auto 1fr}.mode .best{grid-column:1/-1;text-align:left}
+    .res-top{grid-template-columns:1fr;justify-items:center;text-align:center}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .hint{display:none}
+  }
+  @media print{
+    body{background:#fff;color:#000}.topbar,.acts,.seg,footer{display:none}
+    .panel{border:0;padding:0}.rev .ee,.rev .a{color:#000}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap" id="quiz-app">
-  <h1>⚖️ Quiz de droit – Le cadre juridique de la vie de l'entreprise</h1>
-  <div class="sub">CPGE ECT 1 – 40 questions (20 normales + 20 difficiles)</div>
 
-  <!-- Écran d'accueil -->
-  <div id="home" class="card">
-    <strong>Choisis un mode :</strong>
-    <div class="modes">
-      <button class="mode" data-mode="all">🎯 Quiz complet<small>40 questions, mélangées</small></button>
-      <button class="mode" data-mode="normal">🟦 Niveau normal<small>20 questions</small></button>
-      <button class="mode" data-mode="difficile">🟥 Niveau difficile<small>20 questions</small></button>
-    </div>
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">ECT<i>.</i>MA</div>
+    <a class="back" href="./">← Retour au site</a>
   </div>
+</header>
 
-  <!-- Écran de question -->
-  <div id="game" class="card hidden">
-    <div class="meta"><span id="count"></span><span id="pts"></span></div>
+<main class="wrap" id="quiz-app">
+  <div class="eyebrow">Droit • CPGE ECT 1 • Module 1</div>
+  <h1>Le cadre juridique de la vie de l'entreprise</h1>
+  <p class="lead">Quiz d'entraînement sur la règle de droit : caractères, sanctions, branches du droit, sources et organes créateurs.</p>
+  <div class="rule"></div>
+
+  <!-- ACCUEIL -->
+  <section id="home" class="panel">
+    <h2 class="sec-title">Choisir un parcours</h2>
+    <div class="modes">
+      <button class="mode" data-mode="all">
+        <div class="num">40<small>questions</small></div>
+        <div><div class="t">Quiz complet</div><div class="d">Tous les niveaux, ordre aléatoire</div></div>
+        <div class="best" data-best="all"><span class="arrow">→</span></div>
+      </button>
+      <button class="mode" data-mode="normal">
+        <div class="num">20<small>questions</small></div>
+        <div><div class="t">Niveau normal</div><div class="d">Définitions et notions de base du cours</div></div>
+        <div class="best" data-best="normal"><span class="arrow">→</span></div>
+      </button>
+      <button class="mode" data-mode="difficile">
+        <div class="num">20<small>questions</small></div>
+        <div><div class="t">Niveau difficile</div><div class="d">Distinctions, articles, principes et mécanismes</div></div>
+        <div class="best" data-best="difficile"><span class="arrow">→</span></div>
+      </button>
+    </div>
+    <div class="tips">
+      <span>Correction immédiate expliquée</span>
+      <span>Raccourcis clavier : 1–4 ou A–D, Entrée</span>
+      <span>Meilleur score enregistré</span>
+    </div>
+  </section>
+
+  <!-- QUESTION -->
+  <section id="game" class="panel hidden" aria-live="polite">
+    <div class="gm-head">
+      <div class="q-count">Question <b id="cur">1</b> / <span id="tot">40</span></div>
+      <div class="right"><span>Score <b id="pts">0</b></span><span>Temps <b id="clock">00:00</b></span></div>
+    </div>
     <div class="bar"><div id="progress"></div></div>
     <span id="lvl" class="tag"></span>
     <div class="q" id="question"></div>
-    <div id="options"></div>
-    <div id="exp" class="exp hidden"></div>
-    <div style="margin-top:16px" class="center">
-      <button id="next" class="btn" disabled>Suivant →</button>
+    <div class="opts" id="options"></div>
+    <div id="exp" class="exp hidden" role="status"></div>
+    <div class="gm-foot">
+      <button class="link" id="quit">Abandonner</button>
+      <div style="display:flex;gap:14px;align-items:center">
+        <span class="hint"><kbd>Entrée</kbd> pour continuer</span>
+        <button id="next" class="btn" disabled>Suivant →</button>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Écran de résultat -->
-  <div id="result" class="card hidden">
-    <div class="score" id="final"></div>
-    <p class="center" id="msg"></p>
-    <div class="center" style="margin:12px 0 20px">
-      <button class="btn" id="retry">Rejouer</button>
-      <button class="btn alt" id="menu">Menu</button>
+  <!-- RÉSULTAT -->
+  <section id="result" class="panel hidden">
+    <div class="res-top">
+      <div class="ring">
+        <svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="52" fill="none" stroke-width="9"/><circle class="prg" id="ringp" cx="60" cy="60" r="52" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+        <div class="c"><b id="pct">0%</b><span id="frac">0 / 0</span></div>
+      </div>
+      <div>
+        <div class="verdict" id="verdict"></div>
+        <p class="verdict-sub" id="vsub"></p>
+        <div class="acts">
+          <button class="btn" id="retry">Recommencer</button>
+          <button class="btn ghost" id="menu">Changer de parcours</button>
+          <button class="btn ghost" id="print">Imprimer</button>
+        </div>
+      </div>
     </div>
-    <h3>Correction</h3>
+
+    <div class="stats">
+      <div class="stat"><div class="l">Bonnes réponses</div><div class="v" id="s-ok">0</div></div>
+      <div class="stat"><div class="l">Erreurs</div><div class="v" id="s-ko">0</div></div>
+      <div class="stat"><div class="l">Niveau normal</div><div class="v" id="s-n">–</div></div>
+      <div class="stat"><div class="l">Niveau difficile</div><div class="v" id="s-d">–</div></div>
+    </div>
+    <div class="hint" id="s-time" style="margin-top:6px"></div>
+
+    <div class="rev-head">
+      <h2>Correction détaillée</h2>
+      <div class="seg" role="tablist">
+        <button class="on" data-f="all">Toutes</button>
+        <button data-f="ko">Erreurs</button>
+      </div>
+    </div>
     <div id="review"></div>
-  </div>
-</div>
+  </section>
+
+  <footer>© ECT.MA – Cours du Pr. Chtouki Zakaria • Droit CPGE 2026/2027</footer>
+</main>
 
 <script>
-/* Format : l = niveau, q = question, o = options (la BONNE réponse est TOUJOURS la première,
-   le script mélange l'ordre à l'affichage), e = explication. */
+/* Format : l = niveau, q = question, o = options (la BONNE réponse est TOUJOURS la première ;
+   l'ordre est mélangé à l'affichage), e = explication. */
 const QUESTIONS = [
 /* ========== NORMAL (20) ========== */
 {l:"normal",q:"Que désigne le « droit objectif » ?",o:["L'ensemble des règles qui régissent la vie en société","Un pouvoir dont dispose une personne","Uniquement les décisions des juges","Les règles morales d'un groupe"],e:"Le droit objectif est l'ensemble des règles auxquelles sont soumises les personnes vivant en société."},
@@ -133,39 +288,55 @@ const QUESTIONS = [
 
 (() => {
   const $ = id => document.getElementById(id);
+  const LET = ["A","B","C","D"];
   const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
-  let quiz=[], idx=0, score=0, answers=[], locked=false;
+  const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const fmt = s => String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+  const store = {
+    get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+    set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  };
+  const KEY = m => "ectDroitBest_"+m;
 
-  function show(id){ ["home","game","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id)); window.scrollTo(0,0); }
+  let mode="all", quiz=[], idx=0, score=0, answers=[], locked=false, t0=0, timer=null, secs=0;
 
-  function start(mode){
-    let pool = mode==="all" ? QUESTIONS : QUESTIONS.filter(q=>q.l===mode);
-    quiz = shuffle(pool).map(q=>{
-      const opts = shuffle(q.o.map((t,i)=>({t,ok:i===0})));
-      return {l:q.l,q:q.q,e:q.e,opts};
+  function show(id){ ["home","game","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id)); window.scrollTo({top:0,behavior:"smooth"}); }
+
+  function bests(){
+    document.querySelectorAll("[data-best]").forEach(el=>{
+      const b=store.get(KEY(el.dataset.best));
+      el.innerHTML = b ? `Meilleur : <b>${b.score}/${b.total}</b> (${b.pct}%)` : '<span class="arrow">→</span>';
     });
-    idx=0; score=0; answers=[]; show("game"); render();
-    start.mode = mode;
+  }
+
+  function start(m){
+    mode=m;
+    const pool = m==="all" ? QUESTIONS : QUESTIONS.filter(q=>q.l===m);
+    quiz = shuffle(pool).map(q=>({l:q.l,q:q.q,e:q.e,opts:shuffle(q.o.map((t,i)=>({t,ok:i===0})))}));
+    idx=0; score=0; answers=[]; secs=0; t0=Date.now();
+    $("tot").textContent=quiz.length; $("clock").textContent="00:00";
+    clearInterval(timer); timer=setInterval(()=>{secs=Math.floor((Date.now()-t0)/1000);$("clock").textContent=fmt(secs)},1000);
+    show("game"); render();
   }
 
   function render(){
     locked=false;
     const q=quiz[idx];
-    $("count").textContent=`Question ${idx+1} / ${quiz.length}`;
-    $("pts").textContent=`Score : ${score}`;
+    $("cur").textContent=idx+1; $("pts").textContent=score;
     $("progress").style.width=(idx/quiz.length*100)+"%";
-    const lv=$("lvl"); lv.textContent=q.l==="normal"?"Normal":"Difficile"; lv.className="tag "+q.l;
+    const lv=$("lvl"); lv.textContent=q.l==="normal"?"Niveau normal":"Niveau difficile"; lv.className="tag "+q.l;
     $("question").textContent=q.q;
     const box=$("options"); box.innerHTML="";
     q.opts.forEach((o,i)=>{
       const b=document.createElement("button");
-      b.className="opt"; b.textContent=o.t;
+      b.className="opt"; b.type="button";
+      b.innerHTML=`<span class="k">${LET[i]}</span><span class="tx">${esc(o.t)}</span>`;
       b.onclick=()=>choose(i);
       box.appendChild(b);
     });
     $("exp").classList.add("hidden");
     $("next").disabled=true;
-    $("next").textContent = idx===quiz.length-1 ? "Voir le résultat" : "Suivant →";
+    $("next").textContent = idx===quiz.length-1 ? "Voir les résultats" : "Suivant →";
   }
 
   function choose(i){
@@ -173,30 +344,71 @@ const QUESTIONS = [
     const q=quiz[idx], btns=[...$("options").children];
     const good=q.opts[i].ok;
     if(good) score++;
-    answers.push({q:q.q, chosen:q.opts[i].t, correct:q.opts.find(o=>o.ok).t, ok:good, e:q.e});
-    btns.forEach((b,k)=>{ b.disabled=true; if(q.opts[k].ok) b.classList.add("ok"); else if(k===i) b.classList.add("ko"); });
-    $("exp").innerHTML=(good?"✅ <b>Bonne réponse !</b> ":"❌ <b>Mauvaise réponse.</b> ")+q.e;
+    answers.push({l:q.l,q:q.q,chosen:q.opts[i].t,correct:q.opts.find(o=>o.ok).t,ok:good,e:q.e});
+    btns.forEach((b,k)=>{ b.disabled=true;
+      if(q.opts[k].ok) b.classList.add("ok"); else if(k===i) b.classList.add("ko"); else b.classList.add("dim"); });
+    $("exp").innerHTML=`<span class="v ${good?"ok":"ko"}">${good?"Bonne réponse":"Réponse incorrecte"}</span>${esc(q.e)}`;
     $("exp").classList.remove("hidden");
-    $("pts").textContent=`Score : ${score}`;
+    $("pts").textContent=score;
+    $("progress").style.width=((idx+1)/quiz.length*100)+"%";
     $("next").disabled=false;
+    $("next").focus({preventScroll:true});
   }
+
+  function next(){ if(locked){ if(idx<quiz.length-1){idx++;render();} else finish(); } }
 
   function finish(){
+    clearInterval(timer); secs=Math.floor((Date.now()-t0)/1000);
     show("result");
     const total=quiz.length, pct=Math.round(score/total*100);
-    $("final").textContent=`${score} / ${total}`;
-    $("msg").textContent = pct>=80?"Excellent ! 🎉 Tu maîtrises le chapitre.":pct>=50?"Bien ! Revois les points manqués ci-dessous. 👍":"À retravailler : relis le cours et réessaie. 💪";
-    $("review").innerHTML = answers.map((a,i)=>
-      `<div class="rev"><b>${i+1}. ${esc(a.q)}</b><br>`+
-      (a.ok?`<span class="good">✔ ${esc(a.chosen)}</span>`:`<span class="bad">✘ ${esc(a.chosen)}</span><br><span class="good">✔ ${esc(a.correct)}</span>`)+
-      `<br><small>${esc(a.e)}</small></div>`).join("");
+    $("pct").textContent=pct+"%"; $("frac").textContent=`${score} / ${total}`;
+    const C=2*Math.PI*52; $("ringp").style.strokeDasharray=C;
+    $("ringp").style.strokeDashoffset=C; requestAnimationFrame(()=>requestAnimationFrame(()=>{$("ringp").style.strokeDashoffset=C*(1-pct/100)}));
+    const v = pct>=85?["Excellent travail","Vous maîtrisez très bien ce chapitre."]:
+              pct>=70?["Très bon niveau","Quelques points à consolider, rien d'alarmant."]:
+              pct>=50?["Niveau satisfaisant","Revoyez les notions ci-dessous pour progresser."]:
+                      ["À renforcer","Relisez le cours puis refaites le quiz."];
+    $("verdict").textContent=v[0]; $("vsub").textContent=v[1];
+    $("s-ok").textContent=score; $("s-ko").textContent=total-score;
+    const by=l=>{const a=answers.filter(x=>x.l===l);return a.length?a.filter(x=>x.ok).length+" / "+a.length:"–"};
+    $("s-n").textContent=by("normal"); $("s-d").textContent=by("difficile");
+    $("s-time").textContent=`Durée : ${fmt(secs)} • ${total} questions`;
+    const prev=store.get(KEY(mode));
+    if(!prev || pct>prev.pct) store.set(KEY(mode),{score,total,pct});
+    filter("all");
+    document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.f==="all"));
   }
-  const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  function filter(f){
+    const list=answers.map((a,i)=>({a,i})).filter(x=>f==="all"||!x.a.ok);
+    $("review").innerHTML = list.length ? list.map(({a,i})=>
+      `<div class="rev"><div class="n ${a.ok?"ok":"ko"}">${i+1}</div><div>
+        <div class="qq">${esc(a.q)}</div>
+        <div class="a">${a.ok?`<span class="ok">✓ ${esc(a.chosen)}</span>`:`<span class="ko">✗ ${esc(a.chosen)}</span><br><span class="ok">✓ ${esc(a.correct)}</span>`}</div>
+        <div class="ee">${esc(a.e)}</div></div></div>`).join("")
+      : '<div class="empty">Aucune erreur : parcours parfait.</div>';
+  }
 
   document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>start(b.dataset.mode));
-  $("next").onclick=()=>{ if(idx<quiz.length-1){idx++;render();} else finish(); };
-  $("retry").onclick=()=>start(start.mode||"all");
-  $("menu").onclick=()=>show("home");
+  document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x===b)); filter(b.dataset.f);
+  });
+  $("next").onclick=next;
+  $("retry").onclick=()=>start(mode);
+  $("menu").onclick=()=>{bests();show("home")};
+  $("print").onclick=()=>window.print();
+  $("quit").onclick=()=>{ if(confirm("Abandonner ce quiz ? Votre progression sera perdue.")){clearInterval(timer);bests();show("home");} };
+
+  document.addEventListener("keydown",e=>{
+    if($("game").classList.contains("hidden")||e.ctrlKey||e.metaKey||e.altKey) return;
+    const k=e.key.toLowerCase();
+    let i=-1;
+    if(/^[1-4]$/.test(k)) i=+k-1; else if(/^[a-d]$/.test(k)) i=k.charCodeAt(0)-97;
+    if(i>=0 && !locked){ e.preventDefault(); choose(i); }
+    else if((k==="enter"||k==="arrowright") && locked){ e.preventDefault(); next(); }
+  });
+
+  bests();
 })();
 </script>
 </body>
