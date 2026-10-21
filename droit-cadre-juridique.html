@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz – Le cadre juridique de la vie de l'entreprise</title>
+<style>
+  :root{--bg:#f4f6fb;--card:#fff;--txt:#1f2937;--muted:#6b7280;--main:#2f5bea;--ok:#16a34a;--ko:#dc2626;--bd:#e5e7eb}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f172a;--card:#1e293b;--txt:#e5e7eb;--muted:#94a3b8;--main:#6d8cff;--bd:#334155}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:.2em 0}
+  .sub{color:var(--muted);margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+  button{font:inherit;cursor:pointer}
+  .btn{background:var(--main);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:600}
+  .btn.alt{background:transparent;color:var(--main);border:1px solid var(--main)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .modes{display:grid;gap:10px;margin:16px 0}
+  .mode{text-align:left;background:var(--card);color:var(--txt);border:2px solid var(--bd);border-radius:12px;padding:14px}
+  .mode:hover{border-color:var(--main)}
+  .mode small{display:block;color:var(--muted)}
+  .bar{height:8px;background:var(--bd);border-radius:99px;overflow:hidden;margin:8px 0 16px}
+  .bar>div{height:100%;background:var(--main);width:0;transition:width .3s}
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:99px;color:#fff}
+  .tag.normal{background:#0ea5e9}.tag.difficile{background:#e11d48}
+  .q{font-size:1.15rem;font-weight:600;margin:12px 0}
+  .opt{display:block;width:100%;text-align:left;background:transparent;color:var(--txt);border:2px solid var(--bd);border-radius:10px;padding:12px;margin:8px 0}
+  .opt:hover:not(:disabled){border-color:var(--main)}
+  .opt.ok{border-color:var(--ok);background:rgba(22,163,74,.12)}
+  .opt.ko{border-color:var(--ko);background:rgba(220,38,38,.12)}
+  .opt:disabled{cursor:default}
+  .exp{margin-top:12px;padding:12px;border-left:4px solid var(--main);background:rgba(47,91,234,.08);border-radius:6px}
+  .score{font-size:3rem;font-weight:800;text-align:center;color:var(--main)}
+  .center{text-align:center}
+  .rev{border-bottom:1px solid var(--bd);padding:10px 0}
+  .rev:last-child{border:0}
+  .good{color:var(--ok)}.bad{color:var(--ko)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="quiz-app">
+  <h1>⚖️ Quiz de droit – Le cadre juridique de la vie de l'entreprise</h1>
+  <div class="sub">CPGE ECT 1 – 40 questions (20 normales + 20 difficiles)</div>
 
+  <!-- Écran d'accueil -->
+  <div id="home" class="card">
+    <strong>Choisis un mode :</strong>
+    <div class="modes">
+      <button class="mode" data-mode="all">🎯 Quiz complet<small>40 questions, mélangées</small></button>
+      <button class="mode" data-mode="normal">🟦 Niveau normal<small>20 questions</small></button>
+      <button class="mode" data-mode="difficile">🟥 Niveau difficile<small>20 questions</small></button>
+    </div>
+  </div>
+
+  <!-- Écran de question -->
+  <div id="game" class="card hidden">
+    <div class="meta"><span id="count"></span><span id="pts"></span></div>
+    <div class="bar"><div id="progress"></div></div>
+    <span id="lvl" class="tag"></span>
+    <div class="q" id="question"></div>
+    <div id="options"></div>
+    <div id="exp" class="exp hidden"></div>
+    <div style="margin-top:16px" class="center">
+      <button id="next" class="btn" disabled>Suivant →</button>
+    </div>
+  </div>
+
+  <!-- Écran de résultat -->
+  <div id="result" class="card hidden">
+    <div class="score" id="final"></div>
+    <p class="center" id="msg"></p>
+    <div class="center" style="margin:12px 0 20px">
+      <button class="btn" id="retry">Rejouer</button>
+      <button class="btn alt" id="menu">Menu</button>
+    </div>
+    <h3>Correction</h3>
+    <div id="review"></div>
+  </div>
+</div>
+
+<script>
+/* Format : l = niveau, q = question, o = options (la BONNE réponse est TOUJOURS la première,
+   le script mélange l'ordre à l'affichage), e = explication. */
+const QUESTIONS = [
+/* ========== NORMAL (20) ========== */
+{l:"normal",q:"Que désigne le « droit objectif » ?",o:["L'ensemble des règles qui régissent la vie en société","Un pouvoir dont dispose une personne","Uniquement les décisions des juges","Les règles morales d'un groupe"],e:"Le droit objectif est l'ensemble des règles auxquelles sont soumises les personnes vivant en société."},
+{l:"normal",q:"Quels sont les caractères de la règle de droit ?",o:["Générale, abstraite, obligatoire et sanctionnée par l'autorité publique","Particulière, concrète et facultative","Religieuse, morale et sociale","Locale, temporaire et libre"],e:"La règle de droit est générale, abstraite, obligatoire, et sa sanction est assurée par l'autorité publique."},
+{l:"normal",q:"Qu'est-ce qu'une règle supplétive ?",o:["Une règle qui ne s'applique que si les parties n'ont pas choisi autre chose","Une règle qui s'impose en toutes circonstances","Une règle réservée au droit pénal","Une règle religieuse"],e:"La règle supplétive interprète la volonté probable des parties : elle s'applique à défaut de volonté contraire."},
+{l:"normal",q:"Qu'est-ce qu'une règle impérative ?",o:["Une règle d'ordre public à laquelle on ne peut déroger par convention","Une règle que chacun peut écarter","Une règle propre aux contrats commerciaux","Une simple recommandation"],e:"La règle impérative s'impose à tous : ni les individus ni les juridictions ne peuvent l'écarter."},
+{l:"normal",q:"Que régit le droit public ?",o:["L'organisation de l'État et les rapports entre les particuliers et les pouvoirs publics","Uniquement les rapports entre particuliers","Les contrats commerciaux","Le mariage et la filiation"],e:"Le droit public vise la satisfaction de l'intérêt général."},
+{l:"normal",q:"Que régit le droit commercial ?",o:["Les commerçants et les actes de commerce","L'état des personnes","Les impôts de l'État","Les relations entre États"],e:"Le droit commercial (ou droit des affaires) régit les commerçants, les sociétés et les actes de commerce."},
+{l:"normal",q:"Le droit international privé s'applique aux situations…",o:["Entre particuliers comportant un élément d'extranéité","Entre deux États","Entre l'État et ses fonctionnaires","Uniquement pénales"],e:"Exemple : le mariage d'un Marocain avec une Française, ou un contrat entre un Marocain et un Américain."},
+{l:"normal",q:"Quels sont les deux éléments de la coutume ?",o:["Un élément matériel et un élément psychologique","Un élément écrit et un élément oral","Un élément légal et un élément judiciaire","Un élément moral et un élément religieux"],e:"Matériel : pratique constante. Psychologique : conviction que la pratique est obligatoire."},
+{l:"normal",q:"Selon l'article 70 de la Constitution, qui exerce le pouvoir législatif ?",o:["Le Parlement","Le Gouvernement","Le Roi seul","La Cour constitutionnelle"],e:"Le Parlement vote les lois, contrôle l'action du gouvernement et évalue les politiques publiques."},
+{l:"normal",q:"Qui prend les arrêtés ministériels ?",o:["Les membres du gouvernement (ministres)","Le Parlement","Le Roi","Les juges"],e:"Les arrêtés ministériels sont des textes réglementaires de rang inférieur pris par les ministres."},
+{l:"normal",q:"Quelle formalité est indispensable à l'entrée en vigueur d'une loi ?",o:["Sa publication au Bulletin Officiel","Son vote par la seule Chambre des conseillers","Son approbation par un tribunal","Un référendum"],e:"La publication au Bulletin Officiel est une condition indispensable à l'entrée en vigueur."},
+{l:"normal",q:"Que fixe le droit constitutionnel ?",o:["Les règles relatives aux organes supérieurs de l'État","Les règles du commerce","Les règles de la famille","Les règles du contrat de travail"],e:"Il étudie l'organisation politique de l'État et le fonctionnement des pouvoirs publics dans le cadre de la Constitution."},
+{l:"normal",q:"Que comprend le droit des finances publiques ?",o:["Les règles relatives aux ressources (impôts) et aux dépenses de l'État et des collectivités","Les règles sur les sociétés anonymes","Les règles sur les successions","Les règles sur la procédure pénale"],e:"Il englobe les ressources (impôts) et les dépenses de l'État, des collectivités et des services publics."},
+{l:"normal",q:"Qu'est-ce que la jurisprudence ?",o:["L'ensemble des décisions rendues par les juridictions","L'ensemble des opinions des auteurs","Les lois votées par le Parlement","Les usages populaires"],e:"La jurisprudence peut inciter le législateur à créer ou à modifier des textes."},
+{l:"normal",q:"Qu'est-ce que la doctrine ?",o:["L'ensemble des opinions des auteurs publiées dans leurs ouvrages","Les décisions des juges","Les décrets du Premier ministre","Les traités internationaux"],e:"On distingue les théoriciens (professeurs) et les praticiens (magistrats, avocats, notaires)."},
+{l:"normal",q:"Quels sont les trois objectifs des sanctions de la règle de droit ?",o:["L'exécution, la punition et la réparation","L'interdiction, la dissuasion et l'oubli","La médiation, la négociation et l'arbitrage","La prévention, l'éducation et la morale"],e:"Exécution forcée, punition (droit pénal) et réparation (nullité, dommages-intérêts)."},
+{l:"normal",q:"Sur quels deux principes repose l'économie de marché ?",o:["La propriété privée des moyens de production et les libertés économiques","La planification et la propriété collective","Le monopole de l'État et les quotas","Le troc et la gratuité"],e:"Elle prône un minimum d'intervention de l'État."},
+{l:"normal",q:"Que régit le droit du travail ?",o:["Les relations entre les salariés et les employeurs","Les relations entre États","Les rapports entre commerçants uniquement","L'organisation des juridictions"],e:"Il fixe les droits individuels et collectifs nés de la relation de travail."},
+{l:"normal",q:"Dans quels domaines le droit musulman est-il surtout une source fondamentale ?",o:["Le statut personnel, familial et successoral","Le droit des sociétés","Le droit de la concurrence","Le droit boursier"],e:"Il s'applique aussi aux immeubles non immatriculés."},
+{l:"normal",q:"Qu'est-ce qu'un dahir ?",o:["Une décision royale","Un arrêté ministériel","Un jugement de tribunal","Une circulaire administrative"],e:"Le dahir est l'acte le plus solennel et occupe une place particulière dans la hiérarchie des normes."},
+
+/* ========== DIFFICILE (20) ========== */
+{l:"difficile",q:"Quelle est la fonction de l'ordre public de protection ?",o:["Lutter contre l'abus de pouvoir en protégeant la partie faible (droit du travail, de la consommation)","Garantir la stabilité des prix","Protéger l'environnement uniquement","Limiter la liberté de circulation des capitaux"],e:"L'ordre public de direction défend l'intérêt général (prix, environnement) ; celui de protection compense l'inégalité des parties."},
+{l:"difficile",q:"Que signifie le principe de non-rétroactivité de la loi ?",o:["La loi nouvelle ne remet pas en cause les situations définitivement constituées sous la loi ancienne","La loi nouvelle ne s'applique jamais aux situations en cours","La loi nouvelle s'applique à tous les faits passés","La loi ancienne reste toujours applicable"],e:"À distinguer de l'effet immédiat, qui vise les situations en cours à l'entrée en vigueur."},
+{l:"difficile",q:"Que signifie le principe de l'effet immédiat de la loi ?",o:["La loi nouvelle s'applique immédiatement aux situations en cours au jour de son entrée en vigueur","La loi s'applique avant sa publication","La loi s'applique seulement après 30 ans","La loi ne concerne que les situations futures"],e:"Les deux principes (non-rétroactivité et effet immédiat) sont complémentaires."},
+{l:"difficile",q:"Quel contrôle s'exerce sur la loi et sur le règlement ?",o:["Constitutionnalité pour la loi ; légalité pour le règlement","Légalité pour la loi ; constitutionnalité pour le règlement","Aucun contrôle pour la loi ; légalité pour le règlement","Constitutionnalité pour les deux"],e:"Les lois doivent être conformes à la Constitution ; les règlements doivent l'être à la loi."},
+{l:"difficile",q:"Dans quel délai le Roi promulgue-t-il la loi (art. 50) ?",o:["Dans les trente jours suivant la transmission du texte","Dans les 24 heures","Dans un délai d'un an","Il n'y a aucun délai"],e:"Après le vote des deux chambres, la promulgation précède la publication au Bulletin Officiel."},
+{l:"difficile",q:"Quelle est la portée des décisions de la Cour constitutionnelle ?",o:["Elles s'imposent à tous les pouvoirs publics et ne sont susceptibles d'aucun recours","Elles peuvent être contestées devant le Parlement","Elles ne concernent que les lois ordinaires","Elles sont de simples avis"],e:"Une disposition déclarée inconstitutionnelle ne peut être ni promulguée ni mise en application."},
+{l:"difficile",q:"Parmi ces branches, laquelle N'EST PAS citée comme un droit mixte dans le cours ?",o:["Le droit civil","Le droit pénal","Le droit processuel","Le droit international privé"],e:"Le droit civil est une branche du droit privé. Les droits mixtes n'appartiennent ni au droit privé ni au droit public."},
+{l:"difficile",q:"Qu'est-ce qui distingue la coutume des simples usages sociaux ?",o:["La conviction d'agir en vertu d'une règle obligatoire (élément psychologique)","Le fait d'être écrite","Son ancienneté seulement","Son origine parlementaire"],e:"La politesse est une pratique sociale sans caractère obligatoire."},
+{l:"difficile",q:"Quelles qualités une pratique doit-elle avoir pour devenir une coutume (élément matériel) ?",o:["Ancienne, constante, générale et notoire","Récente, ponctuelle et locale","Écrite, signée et publiée","Imposée par le juge"],e:"Une pratique ancienne ne suffit pas : il faut aussi l'élément psychologique."},
+{l:"difficile",q:"Quel article de la Constitution encadre les matières de la loi, énumérées de façon limitative ?",o:["L'article 71","L'article 3","L'article 50","L'article 6"],e:"L'article 71 énumère limitativement les matières de loi ; l'article 72 laisse le reste au pouvoir réglementaire."},
+{l:"difficile",q:"Quelle est la nature de la nullité d'un acte conclu en violation d'une règle de droit ?",o:["Une sanction de réparation","Une sanction pénale","Une exécution forcée","Une simple recommandation"],e:"La nullité et les dommages-intérêts sont les sanctions « réparatrices » classiques."},
+{l:"difficile",q:"Que comprend le droit pénal selon le cours ?",o:["Le droit pénal général, le droit pénal spécial et la procédure pénale","Le droit civil, commercial et du travail","Le droit constitutionnel et administratif","Le droit des finances publiques et boursier"],e:"Le droit pénal général traite des infractions et de la responsabilité ; le spécial de chaque infraction."},
+{l:"difficile",q:"Que désigne le droit subjectif ?",o:["Les prérogatives individuelles reconnues par l'ordre juridique (propriété, créances, libertés)","Le système des normes en vigueur","Les règles de procédure","Les sources internationales"],e:"Le sujet de droit est la personne titulaire de ces prérogatives."},
+{l:"difficile",q:"Pourquoi dit-on que la règle de droit est « abstraite » ?",o:["Car elle est impersonnelle et s'applique à toute personne réunissant des conditions objectivement déterminées","Car elle n'est pas écrite","Car elle est facultative","Car elle ne concerne que l'État"],e:"« Générale » : elle ne vise pas une personne en particulier et ne tient pas compte des spécificités individuelles."},
+{l:"difficile",q:"Que dispose l'article 3 de la Constitution de 2011 ?",o:["L'Islam est la religion de l'État, qui garantit à tous le libre exercice des cultes","La loi est l'expression suprême de la volonté de la Nation","Le Parlement vote les lois","Le Roi promulgue les lois"],e:"L'article 6 consacre la loi comme expression suprême de la volonté de la Nation."},
+{l:"difficile",q:"Quelles sont les sources du droit international public ?",o:["Conventions, traités, coutumes et principes généraux communs aux États","Lois et décrets nationaux","Arrêtés ministériels","Jurisprudence interne seulement"],e:"Ses sources sont supranationales ; il régit les relations interétatiques et les organisations internationales."},
+{l:"difficile",q:"Qui a cherché à développer le droit coutumier à côté du droit musulman au Maroc ?",o:["Les autorités du protectorat français","Le Parlement de 2011","La Cour constitutionnelle","Les organisations internationales"],e:"Le droit coutumier compte parmi les sources traditionnelles du droit marocain."},
+{l:"difficile",q:"Que sont les dommages-intérêts ?",o:["Une somme d'argent d'un montant égal à la valeur du dommage","Une peine de prison","Une saisie de biens","Une amende pénale"],e:"C'est la sanction la plus habituelle de la responsabilité."},
+{l:"difficile",q:"Que peut faire le Chef du Gouvernement de son pouvoir réglementaire (art. 90) ?",o:["Le déléguer aux ministres","Le transférer au Parlement","Le déléguer aux tribunaux","Il ne peut jamais le déléguer"],e:"Il prend des décrets : règlements autonomes (art. 72) et règlements d'application des lois."},
+{l:"difficile",q:"Quel recours permet au juge administratif de contrôler la légalité des règlements ?",o:["Le recours pour excès de pouvoir","L'appel civil","Le pourvoi pénal","Le recours devant la Cour constitutionnelle"],e:"Les règlements doivent être conformes à la loi et à la Constitution."}
+];
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  let quiz=[], idx=0, score=0, answers=[], locked=false;
+
+  function show(id){ ["home","game","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id)); window.scrollTo(0,0); }
+
+  function start(mode){
+    let pool = mode==="all" ? QUESTIONS : QUESTIONS.filter(q=>q.l===mode);
+    quiz = shuffle(pool).map(q=>{
+      const opts = shuffle(q.o.map((t,i)=>({t,ok:i===0})));
+      return {l:q.l,q:q.q,e:q.e,opts};
+    });
+    idx=0; score=0; answers=[]; show("game"); render();
+    start.mode = mode;
+  }
+
+  function render(){
+    locked=false;
+    const q=quiz[idx];
+    $("count").textContent=`Question ${idx+1} / ${quiz.length}`;
+    $("pts").textContent=`Score : ${score}`;
+    $("progress").style.width=(idx/quiz.length*100)+"%";
+    const lv=$("lvl"); lv.textContent=q.l==="normal"?"Normal":"Difficile"; lv.className="tag "+q.l;
+    $("question").textContent=q.q;
+    const box=$("options"); box.innerHTML="";
+    q.opts.forEach((o,i)=>{
+      const b=document.createElement("button");
+      b.className="opt"; b.textContent=o.t;
+      b.onclick=()=>choose(i);
+      box.appendChild(b);
+    });
+    $("exp").classList.add("hidden");
+    $("next").disabled=true;
+    $("next").textContent = idx===quiz.length-1 ? "Voir le résultat" : "Suivant →";
+  }
+
+  function choose(i){
+    if(locked) return; locked=true;
+    const q=quiz[idx], btns=[...$("options").children];
+    const good=q.opts[i].ok;
+    if(good) score++;
+    answers.push({q:q.q, chosen:q.opts[i].t, correct:q.opts.find(o=>o.ok).t, ok:good, e:q.e});
+    btns.forEach((b,k)=>{ b.disabled=true; if(q.opts[k].ok) b.classList.add("ok"); else if(k===i) b.classList.add("ko"); });
+    $("exp").innerHTML=(good?"✅ <b>Bonne réponse !</b> ":"❌ <b>Mauvaise réponse.</b> ")+q.e;
+    $("exp").classList.remove("hidden");
+    $("pts").textContent=`Score : ${score}`;
+    $("next").disabled=false;
+  }
+
+  function finish(){
+    show("result");
+    const total=quiz.length, pct=Math.round(score/total*100);
+    $("final").textContent=`${score} / ${total}`;
+    $("msg").textContent = pct>=80?"Excellent ! 🎉 Tu maîtrises le chapitre.":pct>=50?"Bien ! Revois les points manqués ci-dessous. 👍":"À retravailler : relis le cours et réessaie. 💪";
+    $("review").innerHTML = answers.map((a,i)=>
+      `<div class="rev"><b>${i+1}. ${esc(a.q)}</b><br>`+
+      (a.ok?`<span class="good">✔ ${esc(a.chosen)}</span>`:`<span class="bad">✘ ${esc(a.chosen)}</span><br><span class="good">✔ ${esc(a.correct)}</span>`)+
+      `<br><small>${esc(a.e)}</small></div>`).join("");
+  }
+  const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>start(b.dataset.mode));
+  $("next").onclick=()=>{ if(idx<quiz.length-1){idx++;render();} else finish(); };
+  $("retry").onclick=()=>start(start.mode||"all");
+  $("menu").onclick=()=>show("home");
+})();
+</script>
+</body>
+</html>
